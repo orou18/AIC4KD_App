@@ -16,7 +16,7 @@ import Reports from "@/pages/reports";
 import Analytics from "@/pages/analytics";
 import Settings from "@/pages/settings";
 import NotFound from "@/pages/not-found";
-import { lazy } from 'react';
+import NewConsultation from "@/pages/new-consultation";
 
 function Router() {
   return (
@@ -47,7 +47,11 @@ function Router() {
           <Consultations />
         </ProtectedRoute>
       </Route>
-      <Route path="/new-consultation" component={lazy(() => import("./pages/new-consultation"))} />
+      <Route path="/new-consultation">
+        <ProtectedRoute>
+          <NewConsultation />
+        </ProtectedRoute>
+      </Route>
       <Route path="/alerts">
         <ProtectedRoute>
           <Alerts />
