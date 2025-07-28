@@ -5,12 +5,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Dashboard from "@/pages/dashboard";
 import PatientDetail from "@/pages/patient-detail";
+import PatientForm from "@/pages/patient-form";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/patients/new" component={PatientForm} />
       <Route path="/patients/:id" component={PatientDetail} />
       <Route component={NotFound} />
     </Switch>

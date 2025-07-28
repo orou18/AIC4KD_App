@@ -3,6 +3,9 @@ import { Header } from "@/components/layout/header";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { AlertsPanel } from "@/components/dashboard/alerts-panel";
 import { RecentPatientsPanel } from "@/components/dashboard/recent-patients-panel";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Dashboard() {
   return (
@@ -18,6 +21,16 @@ export default function Dashboard() {
           </div>
         </main>
       </div>
+      
+      {/* Floating Action Button */}
+      <Link href="/patients/new">
+        <Button
+          className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-medical-blue hover:bg-medical-light shadow-lg"
+          size="icon"
+        >
+          <Plus className="h-6 w-6" />
+        </Button>
+      </Link>
     </div>
   );
 }
