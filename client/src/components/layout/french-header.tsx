@@ -1,4 +1,4 @@
-import { Bell, Search, User, LogOut } from "lucide-react";
+import { Bell, Search, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/components/auth/protected-route"; // Import useAuth
 
 export function FrenchHeader() {
   const { data: alerts } = useQuery({
@@ -19,6 +20,7 @@ export function FrenchHeader() {
     refetchInterval: 10000,
   });
 
+  const { user, logout } = useAuth(); // Use useAuth hook
   const activeAlertsCount = alerts?.filter(alert => alert.status === 'active').length || 0;
 
   return (
@@ -84,7 +86,7 @@ export function FrenchHeader() {
               <User className="mr-2 h-4 w-4" />
               <span>Profil</span>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}> {/* Add logout function */}
               <LogOut className="mr-2 h-4 w-4" />
               <span>Déconnexion</span>
             </DropdownMenuItem>
