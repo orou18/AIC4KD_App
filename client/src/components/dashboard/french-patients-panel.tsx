@@ -28,7 +28,11 @@ interface Alert {
   status: 'active' | 'acknowledged' | 'resolved';
 }
 
-export function FrenchPatientsPanel() {
+interface FrenchPatientsPanelProps {
+  searchTerm?: string;
+}
+
+export function FrenchPatientsPanel({ searchTerm = "" }: FrenchPatientsPanelProps) {
   const { data: consultations, isLoading } = useQuery<Consultation[]>({
     queryKey: ["/api/consultations/recent"],
     refetchInterval: 30000,
@@ -38,6 +42,13 @@ export function FrenchPatientsPanel() {
     queryKey: ["/api/alerts"],
     refetchInterval: 10000,
   });
+
+  // Filter consultations based on search term
+  const filteredConsultations = (consultations || []).filter(consultation =>
+    consultation.patient?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    consultation.patient?.patientId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    consultation.notes?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -111,9 +122,15 @@ export function FrenchPatientsPanel() {
             <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
             <p>Aucune consultation récente</p>
           </div>
+        ) : filteredConsultations.length === 0 && searchTerm ? (
+          <div className="text-center py-6 text-gray-500">
+            <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+            <p>Aucun patient trouvé</p>
+            <p className="text-sm">Essayez de modifier votre recherche</p>
+          </div>
         ) : (
           <div className="space-y-4">
-            {consultations.slice(0, 6).map((consultation) => {
+            {filteredConsultations.slice(0, 6).map((consultation) => {
               const alertStatus = getPatientAlertStatus(consultation.patient.id);
               const initials = consultation.patient.fullName
                 .split(' ')

@@ -22,11 +22,22 @@ interface Alert {
   };
 }
 
-export function FrenchAlertsPanel() {
+interface FrenchAlertsPanelProps {
+  searchTerm?: string;
+}
+
+export function FrenchAlertsPanel({ searchTerm = "" }: FrenchAlertsPanelProps) {
   const { data: alerts, isLoading } = useQuery<Alert[]>({
     queryKey: ["/api/alerts"],
     refetchInterval: 10000,
   });
+
+  // Filter alerts based on search term
+  const filteredAlerts = (alerts || []).filter(alert =>
+    alert.patient?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    alert.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    alert.type?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -65,7 +76,7 @@ export function FrenchAlertsPanel() {
     );
   }
 
-  const sortedAlerts = (alerts || []).sort((a, b) => {
+  const sortedAlerts = (filteredAlerts || []).sort((a, b) => {
     if (a.severity === 'critical' && b.severity !== 'critical') return -1;
     if (b.severity === 'critical' && a.severity !== 'critical') return 1;
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
