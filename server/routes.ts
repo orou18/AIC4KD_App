@@ -54,12 +54,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/patients/:id", async (req, res) => {
     try {
-      const validatedData = insertPatientSchema.partial().parse(req.body);
-      const patient = await storage.updatePatient(req.params.id, validatedData);
+      const patientData = req.body;
+      const patient = await storage.updatePatient(req.params.id, patientData);
       res.json(patient);
     } catch (error) {
       console.error("Error updating patient:", error);
-      res.status(400).json({ message: "Invalid patient data" });
+      res.status(500).json({ message: "Failed to update patient" });
+    }
+  });
+
+  app.delete("/api/patients/:id", async (req, res) => {
+    try {
+      await storage.deletePatient(req.params.id);
+      res.json({ message: "Patient deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting patient:", error);
+      res.status(500).json({ message: "Failed to delete patient" });
     }
   });
 
@@ -89,10 +99,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertConsultationSchema.parse(req.body);
       const consultation = await storage.createConsultation(validatedData);
-      
+
       // Generate alerts based on the new consultation data
       await generateAlerts(consultation);
-      
+
       res.status(201).json(consultation);
     } catch (error) {
       console.error("Error creating consultation:", error);
@@ -175,7 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const pdfBuffer = await generatePatientPDF(patient);
-      
+
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename="patient-report-${patient.patientId}.pdf"`);
       res.send(pdfBuffer);

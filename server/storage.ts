@@ -51,6 +51,8 @@ export interface IStorage {
     todayConsultations: number;
     reportsGenerated: number;
   }>;
+
+  deletePatient(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -93,22 +95,36 @@ export class DatabaseStorage implements IStorage {
         patientId: patient.patientId || `CKD-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
       })
       .returning();
-    
+
     // Create default alert configuration
     await this.createOrUpdateAlertConfiguration({
       patientId: newPatient.id,
     });
-    
+
     return newPatient;
   }
 
-  async updatePatient(id: string, patient: Partial<InsertPatient>): Promise<Patient> {
+  async updatePatient(id: string, updates: Partial<InsertPatient>): Promise<Patient> {
     const [updatedPatient] = await db
       .update(patients)
-      .set({ ...patient, updatedAt: new Date() })
+      .set({ ...updates, updatedAt: new Date() })
       .where(eq(patients.id, id))
       .returning();
     return updatedPatient;
+  }
+
+  async deletePatient(id: string): Promise<void> {
+    // Delete related consultations first
+    await db.delete(consultations).where(eq(consultations.patientId, id));
+
+    // Delete related alerts
+    await db.delete(alerts).where(eq(alerts.patientId, id));
+
+    // Delete alert configurations
+    await db.delete(alertConfigurations).where(eq(alertConfigurations.patientId, id));
+
+    // Finally delete the patient
+    await db.delete(patients).where(eq(patients.id, id));
   }
 
   // Consultation operations
@@ -209,7 +225,7 @@ export class DatabaseStorage implements IStorage {
 
   async createOrUpdateAlertConfiguration(config: InsertAlertConfiguration): Promise<AlertConfiguration> {
     const existing = await this.getAlertConfiguration(config.patientId);
-    
+
     if (existing) {
       const [updatedConfig] = await db
         .update(alertConfigurations)

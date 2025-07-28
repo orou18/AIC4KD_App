@@ -221,7 +221,12 @@ export default function Alerts() {
                   {sortedAlerts.map((alert) => (
                     <div
                       key={alert.id}
-                      className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                      className="border rounded-lg p-4 hover:bg-gray-50 transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (alert.patient?.id) {
+                          window.location.href = `/patients/${alert.patient.id}`;
+                        }
+                      }}
                     >
                       <div className="flex items-start space-x-4">
                         <div className={`w-3 h-3 rounded-full mt-2 ${getSeverityColor(alert.severity)}`} />
@@ -260,28 +265,53 @@ export default function Alerts() {
                                 {getStatusText(alert.status)}
                               </Badge>
                               
-                              {alert.status === 'active' && (
-                                <div className="flex space-x-1">
+                              <div className="flex space-x-1">
+                                {alert.status === 'active' && (
+                                  <>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        acknowledgeAlertMutation.mutate(alert.id);
+                                      }}
+                                      disabled={acknowledgeAlertMutation.isPending}
+                                      title="Marquer comme acquittée"
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        resolveAlertMutation.mutate(alert.id);
+                                      }}
+                                      disabled={resolveAlertMutation.isPending}
+                                      title="Marquer comme résolue"
+                                    >
+                                      <Check className="h-4 w-4" />
+                                    </Button>
+                                  </>
+                                )}
+                                {alert.status === 'acknowledged' && (
                                   <Button
                                     variant="ghost"
                                     size="sm"
                                     className="h-8 w-8 p-0"
-                                    onClick={() => acknowledgeAlertMutation.mutate(alert.id)}
-                                    disabled={acknowledgeAlertMutation.isPending}
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                    onClick={() => resolveAlertMutation.mutate(alert.id)}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      resolveAlertMutation.mutate(alert.id);
+                                    }}
                                     disabled={resolveAlertMutation.isPending}
+                                    title="Marquer comme résolue"
                                   >
                                     <Check className="h-4 w-4" />
                                   </Button>
-                                </div>
-                              )}
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
