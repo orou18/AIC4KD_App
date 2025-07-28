@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/components/auth/protected-route"; // Import useAuth
+import { useAuth } from "@/components/auth/protected-route";
+import { Link } from "wouter";
 
 export function FrenchHeader() {
   const { data: alerts } = useQuery({
@@ -39,17 +40,19 @@ export function FrenchHeader() {
       {/* Right Section */}
       <div className="flex items-center space-x-4">
         {/* Notifications */}
-        <Button variant="ghost" size="sm" className="relative">
-          <Bell className="h-5 w-5 text-gray-600" />
-          {activeAlertsCount > 0 && (
-            <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-            >
-              {activeAlertsCount}
-            </Badge>
-          )}
-        </Button>
+        <Link href="/alerts">
+          <Button variant="ghost" size="sm" className="relative">
+            <Bell className="h-5 w-5 text-gray-600" />
+            {activeAlertsCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+              >
+                {activeAlertsCount}
+              </Badge>
+            )}
+          </Button>
+        </Link>
 
         {/* Current Date */}
         <div className="text-sm text-gray-600 hidden md:block">
@@ -82,11 +85,13 @@ export function FrenchHeader() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profil</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={logout}> {/* Add logout function */}
+            <Link href="/settings">
+              <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profil</span>
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem onClick={logout}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Déconnexion</span>
             </DropdownMenuItem>
