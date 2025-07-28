@@ -75,10 +75,12 @@ export default function Consultations() {
                 {consultations?.length || 0} consultation(s) récente(s)
               </p>
             </div>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Plus className="mr-2 h-4 w-4" />
-              Nouvelle Consultation
-            </Button>
+            <Link href="/patients">
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="mr-2 h-4 w-4" />
+                Nouvelle Consultation
+              </Button>
+            </Link>
           </div>
 
           {/* Search */}
