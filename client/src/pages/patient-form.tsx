@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Sidebar } from "@/components/layout/sidebar";
-import { Header } from "@/components/layout/header";
+import { FrenchSidebar } from "@/components/layout/french-sidebar";
+import { FrenchHeader } from "@/components/layout/french-header";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { insertPatientSchema } from "@shared/schema";
@@ -59,13 +59,13 @@ export default function PatientForm() {
 
   return (
     <div className="min-h-screen flex bg-medical-bg">
-      <Sidebar />
+      <FrenchSidebar />
       <div className="flex-1 flex flex-col">
-        <Header />
+        <FrenchHeader />
         <main className="flex-1 p-6">
           <Card className="max-w-2xl mx-auto">
             <CardHeader>
-              <CardTitle>Add New Patient</CardTitle>
+              <CardTitle>Ajouter un Nouveau Patient</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -76,9 +76,9 @@ export default function PatientForm() {
                       name="fullName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full Name</FormLabel>
+                          <FormLabel>Nom Complet</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Enter patient name" />
+                            <Input {...field} placeholder="Entrez le nom du patient" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -89,12 +89,12 @@ export default function PatientForm() {
                       name="age"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Age</FormLabel>
+                          <FormLabel>Âge</FormLabel>
                           <FormControl>
                             <Input
                               {...field}
                               type="number"
-                              placeholder="Enter age"
+                              placeholder="Entrez l'âge"
                               onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                             />
                           </FormControl>
@@ -110,7 +110,7 @@ export default function PatientForm() {
                       name="patientId"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Patient ID</FormLabel>
+                          <FormLabel>ID Patient</FormLabel>
                           <FormControl>
                             <Input {...field} placeholder="CKD-2025-XXX" />
                           </FormControl>
@@ -123,20 +123,20 @@ export default function PatientForm() {
                       name="ckdStage"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>CKD Stage</FormLabel>
+                          <FormLabel>Stade IRC</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select CKD stage" />
+                                <SelectValue placeholder="Sélectionner le stade IRC" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="Stage 1">Stage 1</SelectItem>
-                              <SelectItem value="Stage 2">Stage 2</SelectItem>
-                              <SelectItem value="Stage 3a">Stage 3a</SelectItem>
-                              <SelectItem value="Stage 3b">Stage 3b</SelectItem>
-                              <SelectItem value="Stage 4">Stage 4</SelectItem>
-                              <SelectItem value="Stage 5">Stage 5</SelectItem>
+                              <SelectItem value="Stage 1">Stade 1</SelectItem>
+                              <SelectItem value="Stage 2">Stade 2</SelectItem>
+                              <SelectItem value="Stage 3a">Stade 3a</SelectItem>
+                              <SelectItem value="Stage 3b">Stade 3b</SelectItem>
+                              <SelectItem value="Stage 4">Stade 4</SelectItem>
+                              <SelectItem value="Stage 5">Stade 5</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -150,12 +150,12 @@ export default function PatientForm() {
                     name="medicalHistory"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Medical History</FormLabel>
+                        <FormLabel>Antécédents Médicaux</FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
                             rows={4}
-                            placeholder="Previous conditions, surgeries, medications..."
+                            placeholder="Conditions précédentes, chirurgies, médicaments..."
                           />
                         </FormControl>
                         <FormMessage />
@@ -169,14 +169,14 @@ export default function PatientForm() {
                       variant="outline"
                       onClick={() => navigate("/")}
                     >
-                      Cancel
+                      Annuler
                     </Button>
                     <Button
                       type="submit"
                       className="bg-medical-blue hover:bg-medical-light"
                       disabled={createPatientMutation.isPending}
                     >
-                      {createPatientMutation.isPending ? "Creating..." : "Create Patient"}
+                      {createPatientMutation.isPending ? "Création..." : "Créer Patient"}
                     </Button>
                   </div>
                 </form>

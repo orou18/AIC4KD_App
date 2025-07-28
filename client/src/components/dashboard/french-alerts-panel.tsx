@@ -5,12 +5,27 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, AlertTriangle, Eye } from "lucide-react";
 import { Link } from "wouter";
-import { formatDistanceToNow } from "date-fns";
 
-export function AlertsPanel() {
-  const { data: alerts, isLoading } = useQuery({
+interface Alert {
+  id: string;
+  patientId: string;
+  severity: 'critical' | 'warning' | 'info';
+  status: 'active' | 'acknowledged' | 'resolved';
+  message: string;
+  parameter: string;
+  value: string;
+  threshold: string;
+  createdAt: string;
+  patient?: {
+    id: string;
+    fullName: string;
+  };
+}
+
+export function FrenchAlertsPanel() {
+  const { data: alerts, isLoading } = useQuery<Alert[]>({
     queryKey: ["/api/alerts"],
-    refetchInterval: 10000, // Refresh every 10 seconds for real-time alerts
+    refetchInterval: 10000,
   });
 
   if (isLoading) {
@@ -50,12 +65,33 @@ export function AlertsPanel() {
     );
   }
 
-  const sortedAlerts = alerts?.sort((a, b) => {
-    // Sort by severity (critical first) then by creation date
+  const sortedAlerts = (alerts || []).sort((a, b) => {
     if (a.severity === 'critical' && b.severity !== 'critical') return -1;
     if (b.severity === 'critical' && a.severity !== 'critical') return 1;
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  }) || [];
+  });
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'critical':
+        return 'bg-red-500';
+      case 'warning':
+        return 'bg-yellow-500';
+      default:
+        return 'bg-blue-500';
+    }
+  };
+
+  const getSeverityText = (severity: string) => {
+    switch (severity) {
+      case 'critical':
+        return 'Critique';
+      case 'warning':
+        return 'Attention';
+      default:
+        return 'Info';
+    }
+  };
 
   return (
     <div className="lg:col-span-2">
@@ -63,7 +99,7 @@ export function AlertsPanel() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg font-semibold text-gray-900">Alertes Critiques</CardTitle>
-            <Button variant="ghost" size="sm" className="text-medical-blue hover:text-medical-light">
+            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
               Voir Tout
             </Button>
           </div>
@@ -77,55 +113,34 @@ export function AlertsPanel() {
           ) : (
             <div className="space-y-4">
               {sortedAlerts.slice(0, 5).map((alert) => (
-                <div
-                  key={alert.id}
-                  className={`flex items-start space-x-4 p-4 rounded-lg border ${
-                    alert.severity === 'critical'
-                      ? 'bg-red-50 border-red-200'
-                      : 'bg-yellow-50 border-yellow-200'
-                  }`}
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full mt-2 ${
-                      alert.severity === 'critical' ? 'bg-critical' : 'bg-warning'
-                    }`}
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-medium text-gray-900">
-                        {alert.patient.fullName}
-                      </h4>
-                      <span className="text-xs text-gray-500">
-                        {formatDistanceToNow(new Date(alert.createdAt), { addSuffix: true })}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">{alert.message}</p>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <Badge
-                        variant={alert.severity === 'critical' ? 'destructive' : 'secondary'}
-                        className={
-                          alert.severity === 'critical'
-                            ? 'bg-critical text-white'
-                            : 'bg-warning text-white'
-                        }
-                      >
-                        {alert.severity === 'critical' ? (
-                          <AlertCircle className="w-3 h-3 mr-1" />
-                        ) : (
-                          <AlertTriangle className="w-3 h-3 mr-1" />
-                        )}
-                        {alert.severity === 'critical' ? 'Critical' : 'Warning'}
-                      </Badge>
-                      <Link href={`/patients/${alert.patient.id}`}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-medical-blue hover:text-medical-light text-xs h-auto p-1"
-                        >
-                          <Eye className="w-3 h-3 mr-1" />
-                          View Patient
-                        </Button>
-                      </Link>
+                <div key={alert.id} className="p-4 border rounded-lg bg-white">
+                  <div className="flex items-start space-x-4">
+                    <div className={`w-2 h-2 rounded-full mt-2 ${getSeverityColor(alert.severity)}`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {alert.patient?.fullName || 'Patient inconnu'}
+                        </p>
+                        <span className="text-xs text-gray-500">
+                          il y a {Math.floor((Date.now() - new Date(alert.createdAt).getTime()) / (1000 * 60))} min
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">{alert.message}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={alert.severity === 'critical' ? 'destructive' : 'secondary'} className="text-xs">
+                            {getSeverityText(alert.severity)}
+                          </Badge>
+                          <span className="text-xs text-gray-500">
+                            {alert.parameter}: {alert.value}
+                          </span>
+                        </div>
+                        <Link href={`/patients/${alert.patientId}`}>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

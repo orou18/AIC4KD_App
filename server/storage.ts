@@ -21,6 +21,7 @@ import { eq, desc, and, count, sql } from "drizzle-orm";
 export interface IStorage {
   // Patient operations
   getPatients(): Promise<Patient[]>;
+  getAllPatients(): Promise<Patient[]>;
   getPatient(id: string): Promise<Patient | undefined>;
   getPatientWithDetails(id: string): Promise<PatientWithDetails | undefined>;
   createPatient(patient: InsertPatient): Promise<Patient>;
@@ -56,6 +57,10 @@ export class DatabaseStorage implements IStorage {
   // Patient operations
   async getPatients(): Promise<Patient[]> {
     return await db.select().from(patients).orderBy(desc(patients.updatedAt));
+  }
+
+  async getAllPatients(): Promise<Patient[]> {
+    return await db.select().from(patients).orderBy(desc(patients.createdAt));
   }
 
   async getPatient(id: string): Promise<Patient | undefined> {

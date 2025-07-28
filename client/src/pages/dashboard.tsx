@@ -1,8 +1,8 @@
-import { Sidebar } from "@/components/layout/sidebar";
-import { Header } from "@/components/layout/header";
-import { StatsCards } from "@/components/dashboard/stats-cards";
-import { AlertsPanel } from "@/components/dashboard/alerts-panel";
-import { RecentPatientsPanel } from "@/components/dashboard/recent-patients-panel";
+import { FrenchSidebar } from "@/components/layout/french-sidebar";
+import { FrenchHeader } from "@/components/layout/french-header";
+import { FrenchStatsCards } from "@/components/dashboard/french-stats-cards";
+import { FrenchAlertsPanel } from "@/components/dashboard/french-alerts-panel";
+import { FrenchPatientsPanel } from "@/components/dashboard/french-patients-panel";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Link } from "wouter";
@@ -10,14 +10,14 @@ import { Link } from "wouter";
 export default function Dashboard() {
   return (
     <div className="min-h-screen flex bg-medical-bg">
-      <Sidebar />
+      <FrenchSidebar />
       <div className="flex-1 flex flex-col">
-        <Header />
+        <FrenchHeader />
         <main className="flex-1 p-6">
-          <StatsCards />
+          <FrenchStatsCards />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <AlertsPanel />
-            <RecentPatientsPanel />
+            <FrenchAlertsPanel />
+            <FrenchPatientsPanel />
           </div>
         </main>
       </div>
