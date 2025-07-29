@@ -46,12 +46,6 @@ export function FrenchSidebar() {
       active: location.startsWith("/reports"),
     },
     {
-      title: "Analytiques",
-      icon: Activity,
-      href: "/analytics",
-      active: location.startsWith("/analytics"),
-    },
-    {
       title: "Paramètres",
       icon: Settings,
       href: "/settings",
@@ -68,7 +62,7 @@ export function FrenchSidebar() {
             <Activity className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">AI4CKD</h1>
+            <h1 className="text-xl font-bold text-gray-900">nephrosense IA</h1>
             <p className="text-xs text-gray-500">Gestion IRC</p>
           </div>
         </div>
@@ -102,7 +96,7 @@ export function FrenchSidebar() {
       {/* Bottom Info */}
       <div className="p-4 border-t border-gray-100">
         <div className="text-xs text-gray-500 text-center">
-          <p>© 2025 AI4CKD</p>
+          <p>© 2025 nephrosense IA</p>
           <p>Version 1.0.0</p>
         </div>
       </div>

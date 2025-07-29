@@ -45,9 +45,7 @@ export function FrenchPatientsPanel({ searchTerm = "" }: FrenchPatientsPanelProp
 
   // Filter consultations based on search term
   const filteredConsultations = (consultations || []).filter(consultation =>
-    consultation.patient?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    consultation.patient?.patientId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    consultation.notes?.toLowerCase().includes(searchTerm.toLowerCase())
+    consultation.patient?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -112,19 +110,19 @@ export function FrenchPatientsPanel({ searchTerm = "" }: FrenchPatientsPanelProp
   };
 
   return (
-    <Card>
+    <Card className="shadow-lg bg-white border-0">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-gray-900">Patients Récents</CardTitle>
+        <CardTitle className="text-lg font-bold text-blue-700">Patients Récents</CardTitle>
       </CardHeader>
       <CardContent>
         {!consultations || consultations.length === 0 ? (
-          <div className="text-center py-6 text-gray-500">
-            <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-6 text-gray-400">
+            <User className="w-12 h-12 mx-auto mb-3 text-gray-200" />
             <p>Aucune consultation récente</p>
           </div>
         ) : filteredConsultations.length === 0 && searchTerm ? (
-          <div className="text-center py-6 text-gray-500">
-            <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+          <div className="text-center py-6 text-gray-400">
+            <User className="w-12 h-12 mx-auto mb-3 text-gray-200" />
             <p>Aucun patient trouvé</p>
             <p className="text-sm">Essayez de modifier votre recherche</p>
           </div>
@@ -141,13 +139,13 @@ export function FrenchPatientsPanel({ searchTerm = "" }: FrenchPatientsPanelProp
               return (
                 <div key={consultation.id} className="flex items-center space-x-3">
                   <Avatar>
-                    <AvatarFallback className="bg-blue-100 text-blue-600">
+                    <AvatarFallback className="bg-gradient-to-br from-blue-200 to-blue-400 text-white font-bold">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <Link href={`/patients/${consultation.patient.id}`}>
-                      <p className="text-sm font-medium text-gray-900 hover:text-blue-600 cursor-pointer truncate">
+                      <p className="text-sm font-semibold text-blue-900 hover:text-green-600 cursor-pointer truncate">
                         {consultation.patient.fullName}
                       </p>
                     </Link>
@@ -158,14 +156,14 @@ export function FrenchPatientsPanel({ searchTerm = "" }: FrenchPatientsPanelProp
                   <div className="flex flex-col items-end space-y-1">
                     <Badge 
                       variant="secondary" 
-                      className={`text-xs text-white ${alertStatus.color}`}
+                      className={`text-xs px-2 py-1 rounded-full ${alertStatus.color} font-semibold`}
                     >
                       {alertStatus.status}
                     </Badge>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0 text-gray-400 hover:text-blue-600"
+                      className="h-6 w-6 p-0 text-blue-500 hover:text-green-600"
                       onClick={() => generatePDF(consultation.patient.id)}
                     >
                       <FileText className="h-4 w-4" />

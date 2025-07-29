@@ -80,7 +80,7 @@ export function FrenchHeader() {
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">Dr. Médecin</p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  medecin@ai4ckd.fr
+                  medecin@nephrosense-ia.fr
                 </p>
               </div>
             </DropdownMenuLabel>

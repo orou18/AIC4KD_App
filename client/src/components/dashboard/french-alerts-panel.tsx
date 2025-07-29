@@ -35,8 +35,7 @@ export function FrenchAlertsPanel({ searchTerm = "" }: FrenchAlertsPanelProps) {
   // Filter alerts based on search term
   const filteredAlerts = (alerts || []).filter(alert =>
     alert.patient?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    alert.message?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    alert.type?.toLowerCase().includes(searchTerm.toLowerCase())
+    alert.message?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -106,40 +105,40 @@ export function FrenchAlertsPanel({ searchTerm = "" }: FrenchAlertsPanelProps) {
 
   return (
     <div className="lg:col-span-2">
-      <Card>
+      <Card className="shadow-lg bg-white border-0">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold text-gray-900">Alertes Critiques</CardTitle>
-            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
+            <CardTitle className="text-lg font-bold text-blue-700">Alertes Critiques</CardTitle>
+            <Button variant="ghost" size="sm" className="text-blue-600 hover:text-green-600 font-semibold">
               Voir Tout
             </Button>
           </div>
         </CardHeader>
         <CardContent>
           {sortedAlerts.length === 0 ? (
-            <div className="text-center py-6 text-gray-500">
-              <AlertCircle className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+            <div className="text-center py-6 text-gray-400">
+              <AlertCircle className="w-12 h-12 mx-auto mb-3 text-gray-200" />
               <p>Aucune alerte active</p>
             </div>
           ) : (
             <div className="space-y-4">
               {sortedAlerts.slice(0, 5).map((alert) => (
-                <div key={alert.id} className="p-4 border rounded-lg bg-white">
+                <div key={alert.id} className="p-4 rounded-xl bg-gradient-to-br from-red-50 to-blue-50 shadow border-0">
                   <div className="flex items-start space-x-4">
                     <div className={`w-2 h-2 rounded-full mt-2 ${getSeverityColor(alert.severity)}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm font-medium text-gray-900 truncate">
+                        <p className="text-sm font-semibold text-blue-900 truncate">
                           {alert.patient?.fullName || 'Patient inconnu'}
                         </p>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-400">
                           il y a {Math.floor((Date.now() - new Date(alert.createdAt).getTime()) / (1000 * 60))} min
                         </span>
                       </div>
                       <p className="text-sm text-gray-600 mb-3">{alert.message}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <Badge variant={alert.severity === 'critical' ? 'destructive' : 'secondary'} className="text-xs">
+                          <Badge variant={alert.severity === 'critical' ? 'destructive' : 'secondary'} className={`text-xs px-2 py-1 rounded-full ${alert.severity === 'critical' ? 'bg-red-600 text-white' : alert.severity === 'warning' ? 'bg-yellow-400 text-white' : 'bg-blue-500 text-white'}` }>
                             {getSeverityText(alert.severity)}
                           </Badge>
                           <span className="text-xs text-gray-500">
@@ -147,7 +146,7 @@ export function FrenchAlertsPanel({ searchTerm = "" }: FrenchAlertsPanelProps) {
                           </span>
                         </div>
                         <Link href={`/patients/${alert.patientId}`}>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-blue-500 hover:text-green-600">
                             <Eye className="h-4 w-4" />
                           </Button>
                         </Link>

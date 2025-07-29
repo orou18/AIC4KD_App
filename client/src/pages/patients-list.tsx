@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FrenchSidebar } from "@/components/layout/french-sidebar";
 import { FrenchHeader } from "@/components/layout/french-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Eye, FileText, AlertTriangle } from "lucide-react";
+import { Plus, Search, Eye, FileText, AlertTriangle, Trash2 } from "lucide-react";
 import { Link } from "wouter";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
+import { apiRequest } from "@/lib/queryClient";
 
 interface Patient {
   id: string;
@@ -38,6 +41,31 @@ export default function PatientsList() {
   const { data: alerts } = useQuery<Alert[]>({
     queryKey: ["/api/alerts"],
     refetchInterval: 10000,
+  });
+
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [patientToDelete, setPatientToDelete] = useState<Patient | null>(null);
+
+  const deletePatientMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest(`/api/patients/${id}`, "DELETE");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/patients"] });
+      toast({
+        title: "Patient supprimé",
+        description: "Le patient a été supprimé avec succès",
+      });
+      setPatientToDelete(null);
+    },
+    onError: () => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le patient",
+        variant: "destructive",
+      });
+    },
   });
 
   const getPatientAlertStatus = (patientId: string) => {

@@ -72,7 +72,7 @@ export default function Settings() {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Paramètres Système</h1>
               <p className="text-gray-600">
-                Configurez les paramètres de l'application AI4CKD
+                Configurez les paramètres de l'application nephrosense IA
               </p>
             </div>
             <div className="flex space-x-2">

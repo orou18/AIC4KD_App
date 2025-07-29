@@ -68,7 +68,7 @@ export function Sidebar() {
             <HeartPulse className="text-white text-lg" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">AI4CKD</h1>
+            <h1 className="text-xl font-semibold text-gray-900">nephrosense IA</h1>
             <p className="text-sm text-gray-500">Medical Platform</p>
           </div>
         </div>

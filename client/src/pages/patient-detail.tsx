@@ -1,5 +1,14 @@
 import { useParams } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
+interface Patient {
+  id: string;
+  fullName: string;
+  age: number;
+  patientId: string;
+  ckdStage: string;
+  medicalHistory: string;
+  createdAt: string;
+}
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { PatientForm } from "@/components/patient/patient-form";
@@ -44,7 +53,7 @@ export default function PatientDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
 
-  const { data: patient, isLoading, error } = useQuery({
+  const { data: patient, isLoading, error } = useQuery<Patient>({
     queryKey: ["/api/patients", id],
     enabled: !!id,
   });
@@ -90,7 +99,7 @@ export default function PatientDetail() {
   const deletePatientMutation = useMutation({
     mutationFn: async () => {
       if (!patient) return;
-      return await apiRequest(`/api/patients/${patient.id}`, "DELETE");
+      return await apiRequest("DELETE", `/api/patients/${patient.id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/patients"] });

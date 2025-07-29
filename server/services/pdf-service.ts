@@ -16,11 +16,11 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       // Header
       doc.fontSize(24)
          .fillColor('#0066CC')
-         .text('AI4CKD Medical Report', { align: 'center' });
+         .text('Rapport Médical nephrosense IA', { align: 'center' });
       
       doc.fontSize(12)
          .fillColor('#666666')
-         .text('Chronic Kidney Disease Management Platform', { align: 'center' });
+         .text('Plateforme de gestion des maladies rénales chroniques', { align: 'center' });
       
       doc.moveDown(2);
 
@@ -36,7 +36,7 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       // Patient Information Section
       doc.fontSize(16)
          .fillColor('#000000')
-         .text('Patient Information');
+         .text('Informations du patient');
       
       doc.moveDown(0.5);
       
@@ -48,14 +48,14 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       let currentY = doc.y;
 
       // Left column
-      doc.text(`Name: ${patient.fullName}`, leftColumn, currentY);
-      doc.text(`Patient ID: ${patient.patientId}`, leftColumn, currentY + 20);
-      doc.text(`Age: ${patient.age} years`, leftColumn, currentY + 40);
+      doc.text(`Nom : ${patient.fullName}`, leftColumn, currentY);
+      doc.text(`ID Patient : ${patient.patientId}`, leftColumn, currentY + 20);
+      doc.text(`Âge : ${patient.age} ans`, leftColumn, currentY + 40);
 
       // Right column
-      doc.text(`CKD Stage: ${patient.ckdStage}`, rightColumn, currentY);
-      doc.text(`Report Date: ${new Date().toLocaleDateString()}`, rightColumn, currentY + 20);
-      doc.text(`Generated: ${new Date().toLocaleString()}`, rightColumn, currentY + 40);
+      doc.text(`Stade IRC : ${patient.ckdStage}`, rightColumn, currentY);
+      doc.text(`Date du rapport : ${new Date().toLocaleDateString('fr-FR')}`, rightColumn, currentY + 20);
+      doc.text(`Généré le : ${new Date().toLocaleString('fr-FR')}`, rightColumn, currentY + 40);
 
       doc.y = currentY + 70;
       doc.moveDown(1);
@@ -64,7 +64,7 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       if (patient.medicalHistory) {
         doc.fontSize(16)
            .fillColor('#000000')
-           .text('Medical History');
+           .text('Antécédents médicaux');
         
         doc.moveDown(0.5);
         
@@ -78,7 +78,7 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       if (patient.consultations && patient.consultations.length > 0) {
         doc.fontSize(16)
            .fillColor('#000000')
-           .text('Recent Clinical Data');
+           .text('Données cliniques récentes');
         
         doc.moveDown(0.5);
 
@@ -97,10 +97,10 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
         
         doc.fillColor('#000000')
            .fontSize(10)
-           .text('Parameter', col1 + 5, tableTop + 8)
-           .text('Value', col2 + 5, tableTop + 8)
-           .text('Normal Range', col3 + 5, tableTop + 8)
-           .text('Status', col4 + 5, tableTop + 8);
+           .text('Paramètre', col1 + 5, tableTop + 8)
+           .text('Valeur', col2 + 5, tableTop + 8)
+           .text('Norme', col3 + 5, tableTop + 8)
+           .text('Statut', col4 + 5, tableTop + 8);
 
         let rowY = tableTop + rowHeight;
         const latestConsultation = patient.consultations[0];
@@ -108,16 +108,16 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
         // Creatinine row
         if (latestConsultation.creatinine) {
           const creatinineValue = parseFloat(latestConsultation.creatinine);
-          const status = creatinineValue > 3.0 ? 'Critical' : creatinineValue > 2.0 ? 'Elevated' : 'Normal';
+          const status = creatinineValue > 3.0 ? 'Critique' : creatinineValue > 2.0 ? 'Élevée' : 'Normale';
           const statusColor = creatinineValue > 3.0 ? '#DC3545' : creatinineValue > 2.0 ? '#FFC107' : '#28A745';
 
           doc.rect(tableLeft, rowY, 500, rowHeight)
              .stroke('#cccccc');
           
           doc.fillColor('#000000')
-             .text('Creatinine', col1 + 5, rowY + 8)
+             .text('Créatinine', col1 + 5, rowY + 8)
              .text(`${latestConsultation.creatinine} mg/dL`, col2 + 5, rowY + 8)
-             .text('0.6-1.2 mg/dL', col3 + 5, rowY + 8);
+             .text('0,6-1,2 mg/dL', col3 + 5, rowY + 8);
           
           doc.fillColor(statusColor)
              .text(status, col4 + 5, rowY + 8);
@@ -127,16 +127,16 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
 
         // eGFR row
         if (latestConsultation.egfr) {
-          const status = latestConsultation.egfr < 30 ? 'Low' : latestConsultation.egfr < 60 ? 'Reduced' : 'Normal';
+          const status = latestConsultation.egfr < 30 ? 'Faible' : latestConsultation.egfr < 60 ? 'Réduite' : 'Normale';
           const statusColor = latestConsultation.egfr < 30 ? '#DC3545' : latestConsultation.egfr < 60 ? '#FFC107' : '#28A745';
 
           doc.rect(tableLeft, rowY, 500, rowHeight)
              .stroke('#cccccc');
           
           doc.fillColor('#000000')
-             .text('eGFR', col1 + 5, rowY + 8)
-             .text(`${latestConsultation.egfr} mL/min/1.73m²`, col2 + 5, rowY + 8)
-             .text('>60 mL/min/1.73m²', col3 + 5, rowY + 8);
+             .text('DFG (eGFR)', col1 + 5, rowY + 8)
+             .text(`${latestConsultation.egfr} mL/min/1,73m²`, col2 + 5, rowY + 8)
+             .text('>60 mL/min/1,73m²', col3 + 5, rowY + 8);
           
           doc.fillColor(statusColor)
              .text(status, col4 + 5, rowY + 8);
@@ -148,8 +148,8 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
         if (latestConsultation.systolic && latestConsultation.diastolic) {
           const systolic = latestConsultation.systolic;
           const diastolic = latestConsultation.diastolic;
-          const status = (systolic >= 180 || diastolic >= 110) ? 'Critical' : 
-                        (systolic >= 140 || diastolic >= 90) ? 'Elevated' : 'Normal';
+          const status = (systolic >= 180 || diastolic >= 110) ? 'Critique' : 
+                        (systolic >= 140 || diastolic >= 90) ? 'Élevée' : 'Normale';
           const statusColor = (systolic >= 180 || diastolic >= 110) ? '#DC3545' : 
                              (systolic >= 140 || diastolic >= 90) ? '#FFC107' : '#28A745';
 
@@ -157,7 +157,7 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
              .stroke('#cccccc');
           
           doc.fillColor('#000000')
-             .text('Blood Pressure', col1 + 5, rowY + 8)
+             .text('Pression artérielle', col1 + 5, rowY + 8)
              .text(`${systolic}/${diastolic} mmHg`, col2 + 5, rowY + 8)
              .text('<120/80 mmHg', col3 + 5, rowY + 8);
           
@@ -174,7 +174,7 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       if (patient.alerts && patient.alerts.length > 0) {
         doc.fontSize(16)
            .fillColor('#000000')
-           .text('Active Alerts');
+           .text('Alertes actives');
         
         doc.moveDown(0.5);
 
@@ -198,7 +198,7 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       if (patient.consultations && patient.consultations[0]?.clinicalNotes) {
         doc.fontSize(16)
            .fillColor('#000000')
-           .text('Clinical Notes');
+           .text('Notes cliniques');
         
         doc.moveDown(0.5);
         
@@ -211,8 +211,8 @@ export async function generatePatientPDF(patient: PatientWithDetails): Promise<B
       // Footer
       doc.fontSize(9)
          .fillColor('#666666')
-         .text('Generated by AI4CKD Platform', { align: 'center' })
-         .text('This report is confidential and intended for medical professionals only.', { align: 'center' });
+         .text('Généré par la plateforme nephrosense IA', { align: 'center' })
+         .text('Ce rapport est confidentiel et destiné uniquement aux professionnels de santé.', { align: 'center' });
 
       doc.end();
     } catch (error) {
