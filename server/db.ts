@@ -3,13 +3,15 @@ import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
 import * as schema from "@shared/schema";
 
-// --- DÉBUT DE LA MODIFICATION ---
-// Charge dotenv uniquement si l'environnement n'est PAS 'production'
+// --- DÉBUT DE LA NOUVELLE MODIFICATION ---
+// Déclarez dotenv en haut mais ne le configurez que si nécessaire
+import * as dotenv from "dotenv"; // Importez dotenv de manière standard en haut du fichier
+
+// Conditionnez l'appel à .config()
 if (process.env.NODE_ENV !== 'production') {
-  import dotenv from "dotenv"; // Utilisez import si vous êtes en ES Modules
-  dotenv.config();
+  dotenv.config(); // Appelez .config() uniquement si ce n'est pas la production
 }
-// --- FIN DE LA MODIFICATION ---
+// --- FIN DE LA NOUVELLE MODIFICATION ---
 
 neonConfig.webSocketConstructor = ws;
 
