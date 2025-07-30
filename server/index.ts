@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import "./db"; // IMPORTEZ VOTRE FICHIER DE CONFIGURATION DE BASE DE DONNÉES ICI
 
 const app = express();
 app.use(express.json());
@@ -47,22 +48,17 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || '5000', 10);
-  app.listen(5000, 'localhost', () => {
-  console.log('Server is running on http://localhost:5000');
-});
+  const host = '0.0.0.0'; // Écouter sur toutes les interfaces réseau
 
+  app.listen(port, host, () => {
+    console.log(`Server is running on http://${host}:${port}`);
+    console.log('DATABASE_URL check at server start:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
+  });
 })();

@@ -2,18 +2,18 @@ import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
 import * as schema from "@shared/schema";
+import * as dotenv from "dotenv";
 
-// --- DÉBUT DE LA NOUVELLE MODIFICATION ---
-// Déclarez dotenv en haut mais ne le configurez que si nécessaire
-import * as dotenv from "dotenv"; // Importez dotenv de manière standard en haut du fichier
-
-// Conditionnez l'appel à .config()
 if (process.env.NODE_ENV !== 'production') {
-  dotenv.config(); // Appelez .config() uniquement si ce n'est pas la production
+  dotenv.config();
 }
-// --- FIN DE LA NOUVELLE MODIFICATION ---
 
 neonConfig.webSocketConstructor = ws;
+
+console.log('--- DB.TS DEBUG ---');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('DATABASE_URL direct in db.ts:', process.env.DATABASE_URL);
+console.log('--- END DB.TS DEBUG ---');
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
